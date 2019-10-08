@@ -1,1 +1,18 @@
 <p>im the receiver</p>
+
+<script>
+    var loc = window.location;
+    var uri = 'ws:';
+
+    if (loc.protocol === 'https:') {
+        uri = 'wss:';
+    }
+    uri += '//' + loc.host;
+    uri += loc.pathname + 'ws';
+
+    ws = new WebSocket(uri)
+
+    ws.onmessage = function (evt) {
+        console.log(evt.data)
+    }
+</script>

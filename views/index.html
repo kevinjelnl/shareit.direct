@@ -1,11 +1,19 @@
 {{define "content"}}
 
-<p>hello index!</p>
+<h1>hello index!</h1>
 
 <!-- included the receiver -->
 {{include "receive"}}
 
 <!-- included the supplier-->
 {{include "supply"}}
-
+<script>
+    // cleanup the tokensmap when the browser is closed
+    window.addEventListener('beforeunload', (event) => {
+        let token = 1234
+        ws.send(JSON.stringify({"closed": true, "token": token}))
+        ws.close();
+        event.returnValue = '';
+    });
+</script>
 {{end}}

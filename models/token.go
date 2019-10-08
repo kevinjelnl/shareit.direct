@@ -7,12 +7,9 @@ import (
 	gonanoid "github.com/matoous/go-nanoid"
 )
 
-// https://medium.com/mindorks/https-medium-com-yashishdua-synchronizing-states-using-mutex-vs-channel-in-go-25e646c83567
-// https://gobyexample.com/mutexes
-
 // Token is used for handshaking a receiver and a supplier
 type Token struct {
-	uuid string
+	Uuid string
 }
 
 const (
@@ -27,7 +24,8 @@ func NewToken() *Token {
 	t := new(Token)
 	uid := t.generateToken()
 	for !tokenExsists(uid) {
-		t.uuid = uid
+		t.Uuid = uid
+		t.registerToken()
 		break
 	}
 	return t
@@ -46,14 +44,14 @@ func (t Token) generateToken() string {
 func (t Token) registerToken() {
 	defer mutex.Unlock()
 	mutex.Lock()
-	tokensmap[t.uuid] = t
+	tokensmap[t.Uuid] = t
 }
 
 // removes the token from the tokensmap
 func (t Token) removeToken() {
 	defer mutex.Unlock()
 	mutex.Lock()
-	delete(tokensmap, t.uuid)
+	delete(tokensmap, t.Uuid)
 	return
 }
 
