@@ -35,7 +35,7 @@ func NewToken() *Token {
 func (t Token) generateToken() string {
 	utoken, err := gonanoid.Nanoid(tokenlenght)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 	return utoken
 }
@@ -47,11 +47,11 @@ func (t Token) registerToken() {
 	tokensmap[t.Uuid] = t
 }
 
-// removes the token from the tokensmap
-func (t Token) removeToken() {
+// RemoveToken removes the token from the tokensmap
+func RemoveToken(t string) {
 	defer mutex.Unlock()
 	mutex.Lock()
-	delete(tokensmap, t.Uuid)
+	delete(tokensmap, t)
 	return
 }
 

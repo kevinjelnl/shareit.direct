@@ -24,7 +24,7 @@ func TestTokenExsists(t *testing.T) {
 
 func TestTokenRemoved(t *testing.T) {
 	token := NewToken()
-	token.removeToken()
+	RemoveToken(token.Uuid)
 	tokenExsists := tokenExsists(token.Uuid)
 	if tokenExsists {
 		t.Error("token not removed")

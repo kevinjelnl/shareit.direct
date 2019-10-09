@@ -10,8 +10,8 @@
 <script>
     // cleanup the tokensmap when the browser is closed
     window.addEventListener('beforeunload', (event) => {
-        let token = 1234
-        ws.send(JSON.stringify({"closed": true, "token": token}))
+        let token = document.getElementById("utoken").innerHTML;
+        ws.send(JSON.stringify({ "status": "closed", "token": token }))
         ws.close();
         event.returnValue = '';
     });

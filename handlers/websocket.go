@@ -21,20 +21,29 @@ func Websocket(c echo.Context) error {
 		ws.Close()
 	}
 
-	// remove
-	_, msg, err := ws.ReadMessage()
-	if err != nil {
-		c.Logger().Error(err)
-	}
-	if err := json.Unmarshal([]byte(msg)); err != nil {
-		log.Fatal(err)
-	}
-	print()
-
 	receiver := models.RegisterReceiver(ws)
 	w := models.WsMessage{Status: "init",
 		TokenStr: receiver.Token.Uuid,
 	}
-	ws.WriteJSON(w)
+	ws.WriteJSON(&w)
+
+	// Remove the token from the tokensmap when the user closes the item
+	_, msg, err := ws.ReadMessage()
+	if err != nil {
+		log.Print(err)
+	}
+
+	// Catch if the user leaves
+	var wmsg models.WsMessage
+	err = json.Unmarshal(msg, &wmsg)
+	if err != nil {
+		log.Print(err)
+		ws.Close()
+	} else {
+		if wmsg.Status == "closed" {
+			models.RemoveToken(wmsg.TokenStr)
+			ws.Close()
+		}
+	}
 	return nil
 }

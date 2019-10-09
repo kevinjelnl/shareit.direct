@@ -1,5 +1,19 @@
 <p>im the receiver</p>
 
+<h2 id="token"></h2>
+
+<form class="pure-form pure-form-stacked">
+    <div class="pure-u-1">
+        <input class="pure-input-1" id="scrtboxReceive" type="password" placeholder="The password will arrive here..."
+            readonly>
+        <button class="button-success pure-button" id="copyButton" type="button" onclick="copySecret()" disabled>Copy
+            Secret</button>
+        <button class="button-warning pure-button" id="receiverShow" type="button"
+            onclick="showSecret('scrtboxReceive', 'receiverShow')" disabled>Show Secret</button>
+    </div>
+    <p id="copied"></p>
+</form>
+<p id="utoken" hidden></p>
 <script>
     var loc = window.location;
     var uri = 'ws:';
@@ -11,8 +25,17 @@
     uri += loc.pathname + 'ws';
 
     ws = new WebSocket(uri)
-
-    ws.onmessage = function (evt) {
-        console.log(evt.data)
+    ws.onmessage = function (message) {
+        let wsMessage = JSON.parse(message.data);
+        console.log(wsMessage);
+        switch (wsMessage["status"]) {
+            case "init":
+                // set the token
+                document.getElementById("token").innerHTML = '<font color="orange">Unique Token: ' + wsMessage["token"] + '</font>';
+                document.getElementById("utoken").innerText = wsMessage["token"]
+                break;
+            default:
+                ws.close();
+        }
     }
 </script>
