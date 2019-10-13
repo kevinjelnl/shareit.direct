@@ -1,19 +1,121 @@
+{{define "head"}}
+<style>
+    .accordion {
+        background-color: black;
+        color: orange;
+        font-weight: bold;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 17px;
+        transition: 0.4s;
+    }
+
+    .active,
+    .accordion:hover {
+        background-color: orange;
+        color: white;
+        font-weight: bold;
+    }
+
+    .accordion:after {
+        content: '\002B';
+        color: white;
+        font-weight: bold;
+        float: right;
+        margin-left: 5px;
+    }
+
+    .active:after {
+        content: "\2212";
+    }
+
+    .panel {
+        padding: 0 18px;
+        background-color: white;
+        height: auto;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+    }
+
+    .passPhraseSupplyDiv {
+        display: none;
+    }
+
+    .passPhraseReceiveDiv {
+        display: none;
+    }
+</style>
+{{end}}
+
 {{define "content"}}
+<div class="center-div">
+    <h1>Shareit.direct</h1>
+    <button class="accordion">RECEIVE</button>
+    <div class="panel">
+        {{include "receive"}}
+    </div>
 
-<h1>hello index!</h1>
+    <button class="accordion">SUPPLY</button>
+    <div class="panel">
+        {{include "supply"}}
+    </div>
+    <br>
+    <hr>
+    <p><i>Use this service at your own risk! Sharing a secret via the Internet is never 100% secure (who knows who is
+            watching). Shareit.direct makes sharing these kind of sensitive data a bit easier and more secure since it
+            is not saving anything on any disk at all.</i></p>
+    <hr>
+    {{include "layouts/footer"}}
+</div>
 
-<!-- included the receiver -->
-{{include "receive"}}
-
-<!-- included the supplier-->
-{{include "supply"}}
 <script>
     // cleanup the tokensmap when the browser is closed
     window.addEventListener('beforeunload', (event) => {
-        let token = document.getElementById("utoken").innerHTML;
+        let token = document.getElementById("utoken").innerText;
         ws.send(JSON.stringify({ "status": "closed", "token": token }))
         ws.close();
         event.returnValue = '';
     });
 </script>
+
+<script>
+    // show the secret
+    function showSecret(rolebox, rolebutton, text = "Secret") {
+        let scrtbox = document.getElementById(rolebox, rolebutton);
+        let showbutton = document.getElementById(rolebutton);
+        if (!scrtbox.value) {
+            return
+        }
+        if (scrtbox.type === "password") {
+            scrtbox.type = "text";
+            showbutton.innerText = "Hide " + text
+        } else {
+            scrtbox.type = "password";
+            showbutton.innerText = "Show " + text
+        }
+    }
+</script>
+
+<script>
+    let acc = document.getElementsByClassName("accordion");
+    let i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            let panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            }
+        });
+    }
+</script>
+
 {{end}}

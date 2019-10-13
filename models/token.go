@@ -16,7 +16,7 @@ const (
 	tokenlenght int = 4
 )
 
-var tokensmap = make(map[string]Token)
+var tokensmap = make(map[string]Receiver)
 var mutex = &sync.Mutex{}
 
 // NewToken creates a token object and returns it to the receiver
@@ -25,7 +25,7 @@ func NewToken() *Token {
 	uid := t.generateToken()
 	for !tokenExsists(uid) {
 		t.Uuid = uid
-		t.registerToken()
+		// t.registerToken()
 		break
 	}
 	return t
@@ -41,10 +41,10 @@ func (t Token) generateToken() string {
 }
 
 // adds the token to the tokensmap
-func (t Token) registerToken() {
+func (t Token) registerToken(r Receiver) {
 	defer mutex.Unlock()
 	mutex.Lock()
-	tokensmap[t.Uuid] = t
+	tokensmap[t.Uuid] = r
 }
 
 // RemoveToken removes the token from the tokensmap

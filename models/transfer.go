@@ -12,5 +12,7 @@ type WsMessage struct {
 
 // TransferSecret ships the secret
 func (m *WsMessage) TransferSecret(c echo.Context) error {
+	m.Status = "transfer" // set the status
+	tokensmap[m.TokenStr].ws.WriteJSON(m)
 	return nil
 }

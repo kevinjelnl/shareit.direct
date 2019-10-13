@@ -12,5 +12,6 @@ type Receiver struct {
 func RegisterReceiver(ws *websocket.Conn) Receiver {
 	token := NewToken()
 	r := Receiver{token, ws}
+	token.registerToken(r)
 	return r
 }

@@ -8,9 +8,9 @@ import (
 )
 
 const (
-	// ip   string = "0.0.0.0"
-	ip   string = "localhost"
-	port int    = 8080
+	ip string = "0.0.0.0"
+	// ip   string = "localhost"
+	port int = 8080
 )
 
 func main() {

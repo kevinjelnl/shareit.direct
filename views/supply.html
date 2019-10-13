@@ -1,1 +1,93 @@
-<p>im the supplier</p>
+<p><i>
+        Supply a secret in 3 simple steps:<br>
+        1. Fill in the received token.<br>
+        2. Insert the requested secret.<br>
+        3. Share the secret.<br>
+    </i>
+</p>
+<h3 id="response"></h3>
+<form class="pure-form pure-form-stacked">
+    <div class="pure-u-1-5">
+        <label for="tokenbox">Token:</label>
+        <input type="text" id="tokenbox" class="pure-input-1-4" placeholder="" required maxlength="4">
+    </div>
+    <div class="pure-u-1">
+        <input class="pure-input-1" id="scrtboxSupply" type="password" placeholder="Insert secret here...">
+        <button class="button-success pure-button" type="button" onclick="sendData()">Share secret</button>
+        <button class="button-warning pure-button" id="supplierShow" type="button"
+            onclick="showSecret('scrtboxSupply', 'supplierShow')">Show Secret</button>
+    </div>
+    <label for="option-one" class="pure-checkbox">
+        <input id="showPassphraseBox" type="checkbox" value="" onclick="showHidePassphrase()">
+        Use passphrase
+    </label>
+</form>
+<form class="pure-form pure-form-stacked">
+    <div id="passPhraseSupplyDiv" class="passPhraseSupplyDiv">
+        To add an extra layer of security. Use a passphrase to encrypt your password with.
+        <div class="pure-u-1">
+            <input class="pure-input-1" id="passphrase" type="password" placeholder="Insert passphrase here ...">
+            <button class="button-warning pure-button" id="passphraseShow" type="button"
+                onclick="showSecret('passphrase', 'passphraseShow', 'Passphrase')">Show Passphrase</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    function showHidePassphrase() {
+        if (showPassphraseBox.checked == true) {
+            passPhraseSupplyDiv.style.display = "block";
+            let accSupplPanel = document.getElementsByClassName("accordion")[1].nextElementSibling;
+            let passphraseblock = document.getElementById("passPhraseSupplyDiv");
+            accSupplPanel.style.maxHeight = (accSupplPanel.scrollHeight + passphraseblock.scrollHeight) + "px";
+        } else {
+            let accSupplPanel = document.getElementsByClassName("accordion")[1].nextElementSibling;
+            let passphraseblock = document.getElementById("passPhraseSupplyDiv");
+            accSupplPanel.style.maxHeight = (accSupplPanel.scrollHeight - passphraseblock.scrollHeight) + "px";
+            passPhraseSupplyDiv.style.display = "none";
+        }
+    }
+</script>
+<!-- the secret transfer part -->
+<script type="text/javascript">
+    function sendData() {
+        var XHR = new XMLHttpRequest();
+        // get the vars
+        var secret = document.getElementById("scrtboxSupply").value;
+        var token = document.getElementById("tokenbox").value;
+        var passphrase = document.getElementById("passphrase").value;
+        var key = false;
+        // get the response element
+        var response = document.getElementById("response");
+
+        if (token == "") {
+            response.innerHTML = '<font color="red">Please insert the received token!</font>';
+            return false
+        }
+        if (!passphrase == "") {
+            var secret = CryptoJS.AES.encrypt(secret, passphrase).toString();
+            key = true;
+        }
+        // Define what happens on successful data submission
+        XHR.addEventListener('load', function (event) {
+            var statusCode = event.srcElement["status"];
+            if (statusCode == 200) {
+                // clear the input fields
+                document.getElementById("scrtboxSupply").value = ""
+                document.getElementById("tokenbox").value = ""
+                document.getElementById("passphrase").value = ""
+                response.innerHTML = '<font color="green">Secret supplied!</font>';
+            } else {
+                response.innerHTML = '<font color="red">Something went wrong :( !</font>';
+                console.log(statusCode)
+            }
+        });
+        // Define what happens in case of error
+        XHR.addEventListener('error', function (event) {
+            response.innerHTML = '<font color="red">Something went wrong :/ !</font>';
+        });
+        XHR.open('POST', '/supply', true);
+        XHR.setRequestHeader('Content-Type', 'application/json');
+        XHR.send(JSON.stringify({ "secret": secret, "token": token, "key": key }));
+    }
+</script>
