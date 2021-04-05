@@ -43,7 +43,7 @@ func SupplierHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 
 	receiver, err := s.tokenExists()
 	if err != nil {
-		resp, _ := json.Marshal("Supplied token invalid!")
+		resp, _ := json.Marshal(false)
 		w.Write(resp)
 		return
 	}

@@ -1,21 +1,11 @@
 <script>
     import CopyToClipboard from "svelte-copy-to-clipboard";
+    import ShowSecretButton from "./reuseables/ShowSecretButton.svelte";
 
     export let secValue;
-    export let btsDisabled;
-    let pwbox;
+    export let btsDisabled = true;
+    let secField;
     let copiedMessage = "";
-    let showHideSecret= "show secret";
-
-    const show = () => {
-        if (pwbox.type == "password") {
-            pwbox.type = "text";
-            showHideSecret= "hide secret";
-        } else {
-            pwbox.type = "password";
-            showHideSecret= "show secret";
-        }
-    };
 
     const handleCopied = (e) => {
         copiedMessage = "Secret copied!";
@@ -28,7 +18,7 @@
 
 <div class="field">
     <input
-        bind:this={pwbox}
+        bind:this={secField}
         class="input"
         type="password"
         placeholder="Your secret will arrive here"
@@ -47,9 +37,11 @@
         <button
             class="button is-success"
             on:click={copy}
-            disabled={btsDisabled}> copy secret </button>
+            disabled={btsDisabled}
+        >
+            copy secret
+        </button>
     </CopyToClipboard>
-    <button class="button is-danger" on:click={show} disabled={btsDisabled}>
-       {showHideSecret} 
-    </button>
+
+    <ShowSecretButton {secField} disableButton={btsDisabled} />
 </div>

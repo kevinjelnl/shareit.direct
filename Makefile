@@ -13,4 +13,9 @@ run_container:
 	docker run -it -p 8080:8080 shareit.direct:latest
 
 
+# dev run front
+run-frontend:
+	cd ${PWD}/frontend && npm run dev
+run-backend:
+	go run main.go
 

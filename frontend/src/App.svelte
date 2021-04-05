@@ -47,7 +47,9 @@
 						? "navbar-item is-active"
 						: "navbar-item"}
 					href={pdict.link}
-					id={i}> {pdict.name}</a
+					id={i}
+				>
+					{pdict.name}</a
 				>
 			{/each}
 		</div>
@@ -55,13 +57,20 @@
 </div>
 
 <div
-	class="container is-max-desktop mb-5 p-5"
-	style="background-color: #fa7d09; border-radius:3px;
+	class="container is-max-desktop p-5"
+	style="background-color: white; border-bottom-right-radius:20px;
 	box-shadow: 0 1px 15px 0 rgba(0,0,0,0.2),0 1px 20px 0 rgba(0,0,0,0.19);
-	height: 50%;"
+	height: 80%;"
 >
 	<div class="columns is-multiline">
 		<!-- <svelte:component this={page} {params} /> -->
 		<svelte:component this={page} />
 	</div>
+</div>
+<div class="container is-max-desktop">
+	<a
+		style="color: #fa7d09;"
+		href="https://github.com/kevinjelnl/shareit.direct/"
+		target="_blank">See the code on github</a
+	>
 </div>
